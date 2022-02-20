@@ -7,8 +7,9 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
       }],
+      locations: Array(1).fill({}),
       xIsNext: true,
       stepNumber: 0,
     };
@@ -18,16 +19,26 @@ export default class App extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const locations = this.state.locations.slice(0, this.state.stepNumber + 1);
 
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+    
+    let row = Math.round(i / 3) + 1;
+    let col = (i % 3) + 1;
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    locations[this.state.stepNumber] = {
+      col: col,
+      row: col >= 3 ? row - 1 : row,
+    };
+
     this.setState({
       history: history.concat([{
         squares: squares,
       }]),
+      locations: locations,
       xIsNext: !this.state.xIsNext,
       stepNumber: history.length,
     });
@@ -42,12 +53,13 @@ export default class App extends React.Component {
 
   render() {
     const history = this.state.history;
+    const locations = this.state.locations;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     const status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     const moves = history.map((step, move) => {
-      const desc = move ? 'Go to move # ' + move : 'Go to game start';
+      const desc = move ? `Go to move # ${move} (col: ${locations[move - 1].col}, row: ${locations[move - 1].row})` : 'Go to game start';
 
       return (
         <li key={move}>
