@@ -1,6 +1,7 @@
 import './App.css';
 import React from 'react';
 import Board from './components/board';
+import Move from './components/move';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -62,9 +63,12 @@ export default class App extends React.Component {
       const desc = move ? `Go to move # ${move} (col: ${locations[move - 1].col}, row: ${locations[move - 1].row})` : 'Go to game start';
 
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
+        <Move 
+          key={move}
+          desc={desc} 
+          isSelected={move === this.state.stepNumber}
+          onClick={() => this.jumpTo(move)}
+        />
       );
     });
 
