@@ -65,8 +65,8 @@ export default class App extends React.Component {
     const locations = this.state.locations;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const status = winner ? 'Winner: ' + current.squares[winner[0]] : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     const sort = this.state.sort === 'asc' ? 'Descending' : 'Ascending';
+    let status = winner ? 'Winner: ' + current.squares[winner[0]] : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     const moves = history.map((step, move) => {
       const desc = move ? `Go to move # ${move} (col: ${locations[move - 1].col}, row: ${locations[move - 1].row})` : 'Go to game start';
@@ -107,6 +107,8 @@ export default class App extends React.Component {
       });
     }
 
+    status = this.state.stepNumber === 9 && winner === null ? 'The match is draw!' : status;
+
     return (
       <div className="game">
         <div className="game-board">
@@ -122,7 +124,6 @@ export default class App extends React.Component {
             <span>Move List: <Sort desc={sort} onClick={() => this.sortMoveList(sort)}/></span>
             <ol>{moves}</ol>
           </div>
-          
         </div>
       </div>
     );
