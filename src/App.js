@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import Board from './components/board';
 import Move from './components/move';
+import Sort from './components/sort';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export default class App extends React.Component {
       locations: Array(1).fill({}),
       xIsNext: true,
       stepNumber: 0,
+      sort: 'asc',
     };
   }
 
@@ -52,12 +54,19 @@ export default class App extends React.Component {
     });
   }
 
+  sortMoveList(sort) {
+    this.setState({
+      sort: sort === 'Ascending' ? 'asc' : 'desc',
+    });
+  }
+
   render() {
     const history = this.state.history;
     const locations = this.state.locations;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     const status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    const sort = this.state.sort === 'asc' ? 'Descending' : 'Ascending';
 
     const moves = history.map((step, move) => {
       const desc = move ? `Go to move # ${move} (col: ${locations[move - 1].col}, row: ${locations[move - 1].row})` : 'Go to game start';
@@ -72,6 +81,32 @@ export default class App extends React.Component {
       );
     });
 
+    if (sort === 'Descending') {
+      moves.sort((a, b) => {
+        if (a.key > b.key) {
+            return 1;
+        }
+    
+        if (a.key < b.key) {
+            return -1;
+        }
+    
+        return 0;
+      });
+    } else {
+      moves.sort((a, b) => {
+        if (a.key < b.key) {
+            return 1;
+        }
+    
+        if (a.key > b.key) {
+            return -1;
+        }
+    
+        return 0;
+      });
+    }
+
     return (
       <div className="game">
         <div className="game-board">
@@ -82,7 +117,11 @@ export default class App extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div className="move-list">
+            <span>Move List: <Sort desc={sort} onClick={() => this.sortMoveList(sort)}/></span>
+            <ol>{moves}</ol>
+          </div>
+          
         </div>
       </div>
     );
