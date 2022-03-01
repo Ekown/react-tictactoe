@@ -91,3 +91,8 @@ ol, ul {
 .move-list {
   margin-top: 10px;
 }
+
+.is-winning {
+  border: 2px solid lightgreen;
+  background-color: #90ee9030;
+}

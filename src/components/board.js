@@ -16,6 +16,7 @@ export default class Board extends React.Component {
                         key={j}
                         value={this.props.squares[j]}
                         onClick={() => this.props.onClick(j)}
+                        isWinning={this.props.winner && this.props.winner.includes(j) ? 'is-winning' : '' }
                     />
                 );
             }
